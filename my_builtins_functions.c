@@ -1,25 +1,29 @@
 #include "minishell.h"
 
-int my_cd(char **args, t_node *node)
-{
-	// i beiliever when changing the derictory i should change pwd in env
-	//since we have our own env, an we we will need it later in my_pwd;
-	//NOTE : we need nodes here to;
-}
+// int my_cd(char **args, t_node *node)
+// {
+// 	// i beiliever when changing the derictory i should change pwd in env
+// 	//since we have our own env, an we we will need it later in my_pwd;
+// 	//NOTE : we need nodes here to;
+// }
 
 int my_pwd(char **args, t_node  *node)
 {
 	t_node *tmp;
+	char *to_silence;
 	
-
+	if(args != NULL)
+	{
+		to_silence = *args;// this is just to silence a error;
+	}
 	tmp = node;
 	while(tmp->next != NULL)
 	{
-		if(tmp->name == "PWD")
+		if(ft_strcmp(tmp->name, "PWD") == 0)
 			printf("%s",tmp->val);
 		tmp = tmp->next;
 	}
-	if(tmp->name == "PWD")
+	if(ft_strcmp(tmp->name, "PWD") == 0)
 		printf("%s",tmp->val);
 	//serch for pwd value in the lists of noedes send by the parser;
 	// NOTE:i didn't use argument;
@@ -81,24 +85,25 @@ int my_export(char **args,t_node *node)
 			return(1);
 		j++;
 	}
+	return(0);// not so sure about it;
 
 	// i don't know wether we should do error management or not???????????
-	// if it needs the node argument it's ok, if not it's not gonna be with the first three at teh same
-	//functions table;
+	
 }
 
-int my_unset(char **args,t_node *node)
-{
-	while(node)
-	{
+// int my_unset(char **args,t_node *node)
+// {
+// 	while(node)
+// 	{
 		
-	}
-	//same for the above
-}
+// 	}
+// 	// if it needs the node argument it's ok, if not it's not gonna be with the first three at teh same
+// 	//functions table;
+// }
 
 int my_echo(char **args)
 {
-	if(args[1] == "-n")
+	if(ft_strcmp(args[1], "-n") == 0)
 	{
 		//?????????
 	}
