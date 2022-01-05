@@ -17,12 +17,18 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <string.h>
-# include <readline/readline.h>
+# include <signal.h>
+# include <limits.h>
+# include <readline/readline.h> // commneted this 2 lines for ubuntu;
 # include <readline/history.h>
 //mine
+ #include <sys/types.h>
+ #include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 //endmine;
+
+char **env_tmp;
 
 typedef struct s_cmd // commands
 {
@@ -84,7 +90,29 @@ void	protection(t_cmd *node);
 int		sizeoftab(char	**tab);
 void	get_line(t_node *node,char **env/*i added this argument*/);
 //mine;
-void ft_excution(t_cmd *strct, t_node *node,char **env);
 int simple_non_builtin_cmd(t_cmd *strct);
+int	ft_strcmp(char *s1, char *s2);
+int non_builtin_cmd(t_cmd *strct);
+void redirection_handler(t_cmd *strct);
+void builtins(t_cmd *strct, t_node *node);
+void excute_last_command(t_cmd *strct,t_node *env);
+int ft_excution(t_cmd *strct, t_node *node);
+int my_pwd(char **args, t_node  *node);
+int my_env(char **args, t_node *node);
+int my_export(char **args,t_node *node);
+int my_unset(char **args,t_node *node);
+int my_echo(char **args,t_node *node);
+int my_exit(char **args, t_node *node);
+int my_cd(char **args, t_node *node);
+char *ft_get_path(char *bin, t_node *env);
+int	ft_isdigit(int c);
+int	is_num(char *str);
+int count_args(char **args);
+char *cut_equal(char *str);
+
+
+
+//end of mine;
+
 
 #endif
