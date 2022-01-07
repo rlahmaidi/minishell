@@ -118,7 +118,7 @@ int	parse_and_exec(char *buf, t_node *node,char **env)
 {
 	char	*str;
 	t_cmd	*strct;
-
+	(void)env;
 	strct = alloc_cmd_s();
 	if (!strct)
 		return (0);
@@ -129,7 +129,7 @@ int	parse_and_exec(char *buf, t_node *node,char **env)
 
 	
 
-	ft_excution(strct, node,env/*i added this argument*/);
+	ft_excution(strct, node);
 
 
 

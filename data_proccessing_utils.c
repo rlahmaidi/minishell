@@ -15,9 +15,7 @@
 char	*env_val(char	*name, t_node	*node)
 {
 	char	*ret;
-	int		i;
 
-	i = 0;
 	ret = NULL;
 	while (node != NULL)
 	{

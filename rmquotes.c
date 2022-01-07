@@ -35,7 +35,7 @@ int	*quotes_index(char *str, int i)
 		}
 		i++;
 	}
-	ret[1] = INT32_MAX;
+	ret[1] = INT_MAX;
 	return (ret);
 }
 

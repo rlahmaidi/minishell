@@ -32,11 +32,9 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	char	*h;
 	char	*n;
 	size_t	j;
-	size_t	i;
 	size_t	ret;
 
 	j = 0;
-	i = 0;
 	h = (char *)haystack;
 	n = (char *)needle;
 	if (!*needle)
@@ -46,7 +44,6 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 		ret = j;
 		if (ft_findstr(n, h, j, len) == 1)
 			return (h + ret);
-		i = 0;
 		j++;
 	}
 	return (0);

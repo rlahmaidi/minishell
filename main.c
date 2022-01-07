@@ -6,7 +6,7 @@
 /*   By: zoizmer <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 22:28:52 by zoizmer           #+#    #+#             */
-/*   Updated: 2021/12/05 22:28:54 by zoizmer          ###   ########.fr       */
+/*   Updated: 2022/01/07 02:17:41 by rlahmaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		ft_strlen(argv[0]);
 		newenv = copy_env(env);
+		env_tmp = copy_env(env);
 		init_struct(newenv, &node);
 		while (newenv[i++])
 			free_null(newenv[i - 1]);
