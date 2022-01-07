@@ -34,21 +34,17 @@ int count_args(char **args)
 	return(i);
 }
 
-char	*cut_equal(char *str)
+int check_cd_errors(char **args)
 {
-	int		i;
-	int		j;
-	char	*tmp;
-
-	i = 0;
-	j = 0;
-	tmp = malloc(sizeof(ft_strlen(str)));
-	while(str[i])
+	if(args[3])
 	{
-		tmp[j] = str[i];
-		j++;
-		i++;
+		printf("cd: too many argumrnts\n");
+		return(2);
 	}
-	tmp[j] = '\0';
-	return(tmp);
+	if(args[2])
+	{
+		printf("cd: string not in pwd: %s\n", args[1]);
+		return(1);
+	}
+	return(0);
 }

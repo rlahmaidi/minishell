@@ -109,7 +109,10 @@ int	ft_isdigit(int c);
 int	is_num(char *str);
 int count_args(char **args);
 char *cut_equal(char *str);
-
+int check_cd_errors(char **args);
+char	*add_char_beggin(char *str, char c);
+char *add_char_end(char *str, char c);
+int add_node(char *args, t_node *node);
 
 
 //end of mine;

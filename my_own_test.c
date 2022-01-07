@@ -24,7 +24,5 @@ int main()
         printf("%d",y);
         close(fd[0]);
     }
-
-   
     return(0);
 }

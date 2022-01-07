@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+
 int my_cd(char **args, t_node *node)
 {
 	(void)args;
@@ -8,49 +9,40 @@ int my_cd(char **args, t_node *node)
 
 	tmp = NULL;
 	tmp1 = node;
+	check_cd_errors(args);
 	while(tmp1 != NULL && ft_strcmp(tmp1->name, "HOME"))
 	{
 		tmp1 = tmp1->next;
-		printf("%s\n",tmp1->val);
 	}
-	tmp = cut_equal(tmp1->val);
-	printf("%s\n",tmp);
 	if(args[1] != NULL)
 	{
-		tmp = args[1];
+		tmp = ft_strdup(args[1]);
+		if(chdir(args[1]) == -1)
+			printf("no such file or directory: %s\n",args[1]);
 	}
-	chdir(tmp);
-	// i believe when changing the derictory i should change pwd in env
-	//since we have our own env, an we we will need it later in my_pwd;
-	//that's why i'm adding the below code;
+	else
+	{
+		tmp = ft_substr(tmp1->val, 2, ft_strlen(tmp1->val) - 3);
+		if(chdir(tmp) == -1)
+			printf("no such file or directory: %s\n",args[1]);
+		tmp = ft_strdup(tmp1->val);
+	}
 	tmp1 = node;
 	while(tmp1 != NULL && ft_strcmp(tmp1->name, "PWD"))
 	{
 		tmp1 = tmp1->next;
 	}
-	tmp1->val = tmp;
-	return (1);
+	tmp1->val = ft_strdup(tmp);
+	free(tmp);
+	tmp =NULL;
+	return (0);
 }
 
 int my_pwd(char **args, t_node  *node)
 {
-	//t_node *tmp;
 	(void)node;
 	(void)args;
-	// tmp = node;
-	// if(args != NULL || args == NULL)// this if just to silence an error but it is still right
-	// {								// since pwd in bash dosen't care about argument;
-	// 	while(tmp != NULL && ft_strcmp(tmp->name, "PWD"))
-	// 	{
-	// 		tmp = tmp->next;
-	// 	}
-	// 	printf("%s\n",tmp->val);
-	// }
-	//char *s = getcwd();
-
 	printf("%s\n", getcwd(NULL, 0));
-	//serch for pwd value in the lists of noedes send by the parser;
-	// NOTE:i didn't use argument;
 	return(1);
 }
 
@@ -61,49 +53,50 @@ int my_env(char **args, t_node *node)
 	(void)args;
 	tmp = node;
 	while(tmp != NULL)
-	{	
-		//printf("declare -x ");
+	{
 		if (tmp->val)
 		{
-		printf("%s=",tmp->name);
-		printf("%s\n",tmp->val);
+			printf("%s",tmp->name);
+			printf("%s\n",tmp->val);
 		}
 		tmp = tmp->next;
 	}
-	// just print the content of the list of nodes but you gonna need node as argument;
-	//NOTE:i didn't use argument
 	return(1);
 }
 
-void add_node(char *args, t_node *node)
+int add_node(char *args, t_node *node)
 {
 	t_node *new_node;
 	int i;
 
-	// start of fill node
 	i = 0;
-	new_node = NULL;
+	new_node = malloc(sizeof(t_node));
+	
 	while(args[i] && args[i] != '=')
-	{
-		new_node->name[i] = args[i];
 		i++;
-	}
-	//new_node->val = NULL;// i don't know wether i should initialize it or not;
-	if(args[i] == '=')
-	{
-		while(args[i])
-		{
-			new_node->val[i] = args[i];
-			i++;
-		}
-	}
-	//end of fill_node() if nedded for norminette;
+	new_node->name = ft_substr(args, 0 , i);
+	new_node->val = ft_substr(args, i + 1, ft_strlen(args));
 	while(node->next != NULL)
 	{
+		if(!ft_strcmp(node->name,new_node->name))
+		{ 
+			if( args[i] == '=')
+			{
+				new_node->val = add_char_beggin(new_node->val, '"');
+				new_node->val = add_char_end(new_node->val, '"');
+				node->val = new_node->val;
+				return(0);
+			}
+			else
+				return(1);
+		}
 		node = node->next;
 	}
+	new_node->val = add_char_beggin(new_node->val, '"');
+	new_node->val = add_char_end(new_node->val, '"');
 	node->next = new_node;
 	new_node->next = NULL;
+	return(0);
 }
 
 int my_export(char **args,t_node *node)
@@ -130,7 +123,7 @@ int my_export(char **args,t_node *node)
 		while(args[i])
 		{
 			if(!ft_isalpha(args[i][0]))
-				printf("%s: not a valid identifier", args[i]);
+				printf("%s: not a valid identifier\n", args[i]);
 			else
 				add_node(args[i],node);
 			i++;

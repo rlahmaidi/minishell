@@ -99,9 +99,10 @@ void excute_last_command(t_cmd *strct,t_node *env)
 	{
 		printf("%s\n",ft_get_path(strct->args[0], env));
 		execve(ft_get_path(strct->args[0], env), strct->args, env_tmp);//khames add it and
+		printf("command not found\n");
 		//printf("test\n");	 // to change NULL into char **env			// and i think it = node;
 		// close(fd[1]);
-		//exit(0); // it's not allowed but we should exit somehow;
+		exit(0); // it's not allowed but we should exit somehow;
 	}
 	else
 	{
