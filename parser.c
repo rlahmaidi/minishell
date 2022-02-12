@@ -114,11 +114,11 @@ void	parce_syntax(char *str, t_cmd *strct, t_red *tmp, int i)
 	}
 }
 
-int	parse_and_exec(char *buf, t_node *node,char **env)
+int	parse_and_exec(char *buf, t_node *node)
 {
 	char	*str;
 	t_cmd	*strct;
-	(void)env;
+
 	strct = alloc_cmd_s();
 	if (!strct)
 		return (0);

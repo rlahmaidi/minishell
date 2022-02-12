@@ -20,12 +20,12 @@ void	sighandler(int sig)
 		write (1, "minishell>> ", 12);
 		write (1, rl_line_buffer, ft_strlen(rl_line_buffer));
 		write (1, "  \b\b\n", 5);
-		//rl_replace_line("", 1);
+		// rl_replace_line("", 1);
 		rl_redisplay();
 	}
 }
 
-void	get_line(t_node *node,char **env/*i added this argument*/)
+void	get_line(t_node *node)
 {
 	char	*buf;
 
@@ -42,8 +42,9 @@ void	get_line(t_node *node,char **env/*i added this argument*/)
 		if (scan(buf) == 0)
 			write (1, "Minishell: Syntax error\n", 24);
 		else
-			parse_and_exec(buf, node,env/*i added this argument*/);
+			parse_and_exec(buf, node);
 	}
+	//system("leaks minishell");
 	free(buf);
 }
 
@@ -55,11 +56,11 @@ int	main(int argc, char **argv, char **env)
 
 	node = NULL;
 	i = 0;
-	if (argc == 1)// i guess it should be if(argcc != 0)???
+	if (argc == 1)
 	{
 		ft_strlen(argv[0]);
 		newenv = copy_env(env);
-		env_tmp = copy_env(env);
+		//env_tmp = copy_env(env); i added this and now i'm commenting
 		init_struct(newenv, &node);
 		while (newenv[i++])
 			free_null(newenv[i - 1]);
@@ -67,7 +68,7 @@ int	main(int argc, char **argv, char **env)
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, sighandler);
 		while (1)
-			get_line(node,env/*i added this argument*/);
+			get_line(node);
 		return (0);
 	}
 	return (1);

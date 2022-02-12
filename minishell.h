@@ -14,6 +14,7 @@
 # define MINI_SHELL_H
 # include <unistd.h>
 # include "libft/libft.h"
+# include <stdbool.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <string.h>
@@ -28,7 +29,7 @@
 #include <fcntl.h>
 //endmine;
 
-char **env_tmp;
+//char **env_tmp;
 
 typedef struct s_cmd // commands
 {
@@ -65,7 +66,7 @@ typedef struct s_fr {
 }	t_fr;
 
 int		scan(char *str);
-int		parse_and_exec(char *buf, t_node	*node,char **env/*i added this argument*/);
+int		parse_and_exec(char *buf, t_node	*node);
 t_cmd	*alloc_cmd_s(void);
 t_red	*alloc_red_s(void);
 int		end_of_delimiter(char *str);
@@ -88,12 +89,12 @@ void	print_strct(t_cmd	*strct);
 void	rm_quotes(t_cmd *srtct);
 void	protection(t_cmd *node);
 int		sizeoftab(char	**tab);
-void	get_line(t_node *node,char **env/*i added this argument*/);
+void	get_line(t_node *node);
 //mine;
 int simple_non_builtin_cmd(t_cmd *strct);
 int	ft_strcmp(char *s1, char *s2);
 int non_builtin_cmd(t_cmd *strct);
-void redirection_handler(t_cmd *strct);
+int redirection_handler(t_cmd *strct);
 void builtins(t_cmd *strct, t_node *node);
 void excute_last_command(t_cmd *strct,t_node *env);
 int ft_excution(t_cmd *strct, t_node *node);
@@ -113,7 +114,10 @@ int check_cd_errors(char **args);
 char	*add_char_beggin(char *str, char c);
 char *add_char_end(char *str, char c);
 int add_node(char *args, t_node *node);
-
+int	node_exist(char *args, t_node *node, int i, t_node *new_node);
+int	open_out_files(char type, char *arg);
+char **list_to_env(t_node *node);
+char *ft_strjoin_free(char *k,char *val);
 
 //end of mine;
 

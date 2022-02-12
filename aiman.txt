@@ -1,0 +1,18 @@
+echo """"""""bla
+echo "" "" "" ""bla
+echo $USER > file1 < file2
+>> hello
+
+cat  << lll << lll << poi >> tmp
+cat  << lll << lll << poi 
+cat << lll << poi >> poin | cat << ss >> kjh
+
+cat << lll << poi | << ss -> abort
+echo < Makefile > ss	  -> abort
+
+export pp --> should not apparetre in env cmd
+export pp --> should apparetre in export cmd
+
+export _1=l
+
+echo $$PWD
