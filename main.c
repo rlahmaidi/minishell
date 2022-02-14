@@ -44,7 +44,7 @@ void	get_line(t_node *node)
 		else
 			parse_and_exec(buf, node);
 	}
-	//system("leaks minishell");
+	 //system("leaks minishell");
 	free(buf);
 }
 
@@ -60,7 +60,6 @@ int	main(int argc, char **argv, char **env)
 	{
 		ft_strlen(argv[0]);
 		newenv = copy_env(env);
-		//env_tmp = copy_env(env); i added this and now i'm commenting
 		init_struct(newenv, &node);
 		while (newenv[i++])
 			free_null(newenv[i - 1]);

@@ -53,7 +53,9 @@ char	*ft_get_path(char *bin, t_node *env)
 {
 	char		**bins;
 	char		*path;
+	int			i;
 	struct stat	sb;
+
 
 	while (env)
 	{
@@ -61,17 +63,20 @@ char	*ft_get_path(char *bin, t_node *env)
 			break ;
 		env = env->next;
 	}
+	if (env == NULL)
+		return (ft_strdup(bin));
 	bins = ft_split(env->val, ':');
-	while (*bins)
+	i = 0;
+	while (bins[i])
 	{
-		path = ft_strjoin(*bins, "/");
-		path = ft_strjoin(path, bin);
+		path = ft_strjoin(bins[i], "/");
+		path = ft_strjoin_free(path, bin);
 		if (!stat(path, &sb))
 			return (path);
-		bins++;
 		free(path);
+		i++;
 	}
-	return (bin);
+	return (NULL);
 }
 
 int	ft_excution(t_cmd *strct, t_node *node)
@@ -84,6 +89,8 @@ int	ft_excution(t_cmd *strct, t_node *node)
 	int			status;
 	static int	ret = 0;
 	char		**env_tmp;
+	char		*path;
+	char	*error_msg;
 
 	f = -1;
 	env_tmp = list_to_env(node);
@@ -127,10 +134,23 @@ int	ft_excution(t_cmd *strct, t_node *node)
 				exit(1);
 			if (non_builtin_cmd(strct))
 			{
-				execve(ft_get_path(strct->args[0], node), strct->args, env_tmp);
-				printf ("%s:command not found\n", strct->cmd);
-				close(fd[1]);
-				exit(0);
+				path = ft_get_path(strct->args[0], node);
+				if (path == NULL)
+				{
+					write(2, "minishell: ", ft_strlen("minishell: "));
+					write(2, strct->args[0], ft_strlen(strct->args[0]));
+					write(2, ": command not found\n", ft_strlen(": command not found") + 1);
+					exit (127);
+				}
+				execve(path, strct->args, env_tmp);
+				error_msg = strerror(errno);
+				write(2, "minishell: ", ft_strlen("minishell: "));
+				write(2, error_msg, ft_strlen(error_msg));
+				write(2, "\n", 1);
+				if (errno == 2)
+					exit(127);
+				else if (errno == 13 || errno == 21)
+					exit(126);
 			}
 			else
 			{

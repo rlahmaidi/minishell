@@ -1,8 +1,5 @@
-#include "minishell.h"
+# include "minishell.h"
 
-// #include "./libft/libft.h"
-// #include <stdio.h>
-// #include <unistd.h>
 char	*add_char_beggin(char *str, char c)
 {
 	char	*tmp;

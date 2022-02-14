@@ -38,3 +38,36 @@ char **list_to_env(t_node *node)
 	env_tab[j] = NULL;
 	return(env_tab);
 }
+
+t_node	*search_for_env(t_node	*node, char *env)
+{
+	t_node	*tmp;
+
+	tmp = node;
+	while(tmp != NULL && ft_strcmp(tmp->name, env))
+	{
+		tmp = tmp->next;
+	}
+	 //printf("%s\n\n%s\n",tmp->name,tmp->val);
+	return(tmp);
+
+}
+char *chage_derictory(char *args, char *str)
+{
+	char *tmp;
+
+	tmp = 	NULL;
+	if (args != NULL)
+	{
+		tmp = ft_strdup(args);
+		if (chdir(args) == -1)
+			printf("cd: no such file or directory: %s\n", args);
+	}
+	else
+	{
+		tmp = ft_substr(str, 2, ft_strlen(str) - 3);
+		if (chdir(tmp) == -1)
+			printf("cd: no such file or directory: %s\n", tmp);
+	}
+	return(tmp);
+}
