@@ -88,14 +88,14 @@ int	ft_excution(t_cmd *strct, t_node *node)
 	int			out;
 	int			status;
 	static int	ret = 0;
-	char		**env_tmp;
+	//char		**env_tmp;
 	char		*path;
 	char	*error_msg;
 
 	f = -1;
-	env_tmp = list_to_env(node);
+	//env_tmp = list_to_env(node);
 	if (ft_strcmp(strct->args[0], "echo") == 0 \
-		&& ft_strcmp(strct->args[1], "$?") == 0)
+		&& strct->args[1] && ft_strcmp(strct->args[1], "$?") == 0)
 	{
 		printf ("%d\n", ret);
 		ret = 0;
@@ -124,6 +124,7 @@ int	ft_excution(t_cmd *strct, t_node *node)
 			{
 				dup2(fd[1], 1);
 				close(fd[1]);//why
+				close(fd[0]);
 			}
 			if (f != -1)
 			{
@@ -142,7 +143,7 @@ int	ft_excution(t_cmd *strct, t_node *node)
 					write(2, ": command not found\n", ft_strlen(": command not found") + 1);
 					exit (127);
 				}
-				execve(path, strct->args, env_tmp);
+				execve(path, strct->args, list_to_env(node));
 				error_msg = strerror(errno);
 				write(2, "minishell: ", ft_strlen("minishell: "));
 				write(2, error_msg, ft_strlen(error_msg));

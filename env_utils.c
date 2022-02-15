@@ -13,6 +13,7 @@ char **list_to_env(t_node *node)
 {
 	char	**env_tab;
 	t_node	*tmp;
+	char	*temp;
 	int		i;
 	int		j;
 
@@ -30,9 +31,14 @@ char **list_to_env(t_node *node)
 	tmp = node;
 	while(i-- > 0)
 	{
-		env_tab[j] = ft_strjoin(tmp->name, "=");
-		env_tab[j] = ft_strjoin_free(env_tab[j], tmp->val);
-		j++;
+		if (tmp->val[0] == '=')
+		{
+			env_tab[j] = ft_strjoin(tmp->name, "=");
+			temp = ft_strtrim(tmp->val + 1, "\"");
+			env_tab[j] = ft_strjoin_free(env_tab[j], temp);
+			free(temp);
+			j++;
+		}
 		tmp = tmp->next;
 	}
 	env_tab[j] = NULL;

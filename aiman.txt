@@ -8,11 +8,16 @@ cat  << lll << lll << poi
 cat << lll << poi >> poin | cat << ss >> kjh
 
 cat << lll << poi | << ss -> abort
-echo < Makefile > ss	  -> abort
+echo < Makefile > ss	  -> abort   FIXED
 
-export pp --> should not apparetre in env cmd
-export pp --> should apparetre in export cmd
+export pp --> should not apparetre in env cmd   FIXED
+export pp --> should apparetre in export cmd  FIXED
 
 export _1=l
 
-echo $$PWD
+echo $$PWD    parsing;
+ export A="3333333dss";
+
+ echo '$0' > ../../../../KROOOOO/.
+
+ ls | >' 

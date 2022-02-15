@@ -39,7 +39,7 @@ int	my_echo(char **args, t_node *node)
 
 	i = 1;
 	(void)node;
-	if (!ft_strcmp(args[1], "-n"))
+	if (args[1] && !ft_strcmp(args[1], "-n"))
 	{
 		i = 2;
 		while (args[i])

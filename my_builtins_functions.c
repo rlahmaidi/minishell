@@ -25,30 +25,43 @@ int	my_cd(char **args, t_node *node)
 
 int	my_pwd(char **args, t_node *node)
 {
+	char *strpwd;
 	(void)node;
 	(void)args;
-	printf("%s\n", getcwd(NULL, 0));
+
+	strpwd = getcwd(NULL, 0);
+	printf("%s\n", strpwd);
+	free(strpwd);
 	return (1);
 }
 
 int	my_env(char **args, t_node *node)
 {
 	t_node	*tmp;
-	char	*str;
+	int		i;
+	char	**temp;
 
-	(void)args;// ERROR :i print node->val with the "" but the bash dosen't;
+	//(void)args;// ERROR :i print node->val with the "" but the bash dosen't;
 	tmp = node;
-	while (tmp != NULL)
+	temp = list_to_env(tmp);
+	i = -1;
+	if(args[1])
 	{
-		if (tmp->val)
-		{
-			printf("%s", tmp->name);
-			str = ft_substr(tmp->val, 2, ft_strlen(tmp->val) - 3);
-			printf("=%s\n", str);
-		}
-		tmp = tmp->next;
+		printf("env: %s: No such file or directorys\n", args[1]);
+		return(0);
 	}
-	return (1);
+	while (temp[++i])
+		printf("%s\n", temp[i]);
+	i = 0;
+	while (temp[i])
+	{
+		if (temp[i])
+			free(temp[i]);
+		i++;
+	}
+	if (temp)
+		free(temp);
+	return (0);
 }
 
 int	add_node(char *args, t_node *node)
