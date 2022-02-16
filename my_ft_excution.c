@@ -6,7 +6,7 @@
 /*   By: rlahmaid <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 03:09:48 by rlahmaid          #+#    #+#             */
-/*   Updated: 2022/02/16 16:29:36 by rlahmaid         ###   ########.fr       */
+/*   Updated: 2022/02/16 18:39:02 by rlahmaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,35 @@ char	*ft_get_path(char *bin, t_node *env)
 	return (NULL);
 }
 
-int	ft_excution(t_cmd *strct, t_node *node)
+void	print_cmd_nfound(t_cmd *strct, t_node *node)
 {
-	int			pid;
-	int			fd[2];
-	int			f;
-	int			in;
-	int			out;
-	int			status;
-	char		*path;
-	char	*error_msg;
+	if (!ft_get_path(strct->args[0], node))
+	{
+		write(2, "minishell: ", ft_strlen("minishell: "));
+		write(2, strct->args[0], ft_strlen(strct->args[0]));
+		write(2, ": command not found\n", ft_strlen(": command not found") + 1);
+		exit (127);
+	}
+}
 
-	f = -1;
+void	waitprocess(int pid)
+{
+	int	status;
+
+	waitpid(pid, &status, 0);
+	while (wait(NULL) > 0)
+		;
+	if (WIFEXITED(status) == true)
+		g_ret = WEXITSTATUS(status);
+	if (WIFSIGNALED(status) == true)
+		g_ret = 128 + WTERMSIG(status);
+}
+
+int	excute_one_builtin(t_cmd *strct, t_node *node)
+{
+	int	in;
+	int	out;
+
 	if (ft_strcmp(strct->args[0], "echo") == 0 \
 			&& strct->args[1] && ft_strcmp(strct->args[1], "$?") == 0)
 	{
@@ -103,89 +120,75 @@ int	ft_excution(t_cmd *strct, t_node *node)
 		dup2(out, 1);
 		return (0);
 	}
+	return (-1);
+}
+
+void	print_execve_error(int err)
+{
+	char	*error_msg;
+
+	error_msg = strerror(err);
+	write(2, "minishell: ", ft_strlen("minishell: "));
+	write(2, error_msg, ft_strlen(error_msg));
+	write(2, "\n", 1);
+	if (err == 2)
+		exit(127);
+	else if (err == 13 || err == 21)
+		exit(126);
+}
+
+void	child_process(t_cmd *strct, t_node *node, int f, int *fd)
+{
+	if (strct->next != NULL)
+	{
+		dup2(fd[1], 1);
+		close(fd[1]);
+		close(fd[0]);
+	}
+	if (dup2(f, 0))
+		close(f);
+	redirection_handler(strct);
+	if (non_builtin_cmd(strct))
+	{
+		print_cmd_nfound(strct, node);
+		execve(ft_get_path(strct->args[0], node), strct->args,
+			list_to_env(node));
+		print_execve_error(errno);
+	}
+	else
+	{
+		builtins(strct, node);
+		close(fd[1]);
+		exit(1);
+	}
+	exit(0);
+}
+
+int	ft_excution(t_cmd *strct, t_node *node)
+{
+	int		pid;
+	int		fd[2];
+	int		f;
+	int		r;
+
+	r = excute_one_builtin(strct, node);
+	if (r != -1)
+		return (r);
 	while (strct != NULL)
 	{
 		if (pipe(fd) < 0)
 			return (1);
-		if ((pid = fork()) < 0)
+		pid = fork();
+		if (pid < 0)
 			return (1);
 		else if (pid == 0)
-		{
-			if (strct->next != NULL)
-			{
-				dup2(fd[1], 1);
-				close(fd[1]);//why
-				close(fd[0]);
-			}
-			if (f != -1)
-			{
-				dup2(f, 0);
-				close(f);
-			}
-			if (redirection_handler(strct) == -1)
-				exit(1);
-			if (non_builtin_cmd(strct))
-			{
-				path = ft_get_path(strct->args[0], node);
-				if (path == NULL)
-				{
-					write(2, "minishell: ", ft_strlen("minishell: "));
-					write(2, strct->args[0], ft_strlen(strct->args[0]));
-					write(2, ": command not found\n", ft_strlen(": command not found") + 1);
-					exit (127);
-				}
-				execve(path, strct->args, list_to_env(node));
-				error_msg = strerror(errno);
-				write(2, "minishell: ", ft_strlen("minishell: "));
-				write(2, error_msg, ft_strlen(error_msg));
-				write(2, "\n", 1);
-				if (errno == 2)
-					exit(127);
-				else if (errno == 13 || errno == 21)
-					exit(126);
-			}
-			else
-			{
-				builtins(strct, node);
-				close(fd[1]);
-				exit(1);
-			}
-			exit(0);
-		}
+			child_process(strct, node, f, fd);
 		close(fd[1]);
 		if (f != -1)
 			close(f);
 		f = fd[0];
 		strct = strct->next;
 	}
-	waitpid(pid, &status, 0);
-	while (wait(NULL) > 0)
-		;
-	if (WIFEXITED(status) == true)
-		g_ret = WEXITSTATUS(status);
-	if (WIFSIGNALED(status) == true)
-		g_ret = 128 + WTERMSIG(status);
+	waitprocess(pid);
 	return (0);
 }
-
-// while(cmd)
-// {
-// 	int fd[2];
-// 	int f = -1;
-// 	pipe(fd);
-// 	fork;
-// 	if(pid == 0)
-// 	{
-// 		if(ila makanch how akhir comd)               // mastapha;
-// 			dup2(fd[1],1);
-// 		if (f != -1)
-// 			dup2(f, 0);
-// 		close(fd[0]);
-// 		exuction;
-// 	}
-// 	else
-// 	{
-// 	f = fd[0];
-// 	close(fd[1]);
-// 	}
-// }

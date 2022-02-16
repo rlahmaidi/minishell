@@ -44,7 +44,7 @@ int	redirection_handler(t_cmd *strct)
 				printf("%s :no such file or derictory\n", tmp->arg);
 		}
 		if (fd_in == -1 || fd_out == -1)
-			return (-1);
+			exit(1);
 		tmp = tmp->next;
 	}
 	if (fd_out != -1)
