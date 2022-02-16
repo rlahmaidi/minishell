@@ -31,6 +31,7 @@
 # include <fcntl.h>
 # include <string.h>
 //endmine;
+int				g_ret;
 
 typedef struct s_cmd
 {
@@ -112,8 +113,8 @@ int		is_num(char *str);
 int		count_args(char **args);
 char	*cut_equal(char *str);
 int		check_cd_errors(char **args);
-char	*add_char_beggin(char *str, char c);
-char	*add_char_end(char *str, char c);
+char	*add_char_beggin(char *str, char c, int f);
+char	*add_char_end(char *str, char c, int f);
 int		add_node(char *args, t_node *node);
 int		node_exist(char *args, t_node *node, int i, t_node *new_node);
 int		open_out_files(char type, char *arg);
@@ -124,8 +125,8 @@ char	*chage_derictory(char args[1], char *str);
 void	ft_export_errors(char *identifier);
 int		isvalid_var_unset(char *str);
 int		isvalid_var_export(char *str);
-
-
-//end of mine;
+void	ft_export_errors(char *identifier);
+void	ft_unset_errors(char *identifier);
+void	my_free_node(t_node *node);
 
 #endif

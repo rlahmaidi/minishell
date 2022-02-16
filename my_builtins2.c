@@ -1,37 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_builtins2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rlahmaid <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/16 02:55:24 by rlahmaid          #+#    #+#             */
+/*   Updated: 2022/02/16 15:44:46 by rlahmaid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-
-int	isvalid_var_unset(char *str)
-{
-	int	i;
-
-	if (ft_isalpha(str[0]) == 0 && str[0] != '_')
-		return (-1);
-	i = 1;
-	while (str[i] != '\0')
-	{
-		if (ft_isalnum(str[i]) == 0 && str[i] != '_')
-			return (-1);
-		i++;
-	}
-	return (0);
-}
-
-int	isvalid_var_export(char *str)
-{
-	int	i;
-
-	if (ft_isalpha(str[0]) == 0 && str[0] != '_')
-		return (-1);
-	i = 1;
-	while (str[i] != '\0' && str[i] != '=')
-	{
-		if (ft_isalnum(str[i]) == 0 && str[i] != '_')
-			return (-1);
-		i++;
-	}
-	return (0);
-}
 
 int	my_echo(char **args, t_node *node)
 {
@@ -65,7 +44,7 @@ int	my_exit(char **args, t_node *node)
 	(void)node;
 	printf("exit\n");
 	if (count_args(args) == 1)
-		exit(0);
+		exit(g_ret);
 	if (is_num(args[1]))
 	{
 		if (count_args(args) > 2)
@@ -86,31 +65,22 @@ int	my_exit(char **args, t_node *node)
 	return (0);
 }
 
-void	ft_unset_errors(char *identifier)
+void	my_free_node(t_node *node)
 {
-	write(2, "minishell: unset ", ft_strlen("minishell: unset "));
-	write(2, identifier, ft_strlen(identifier));
-	write(2, ": not a valid identifier\n",
-		ft_strlen(": not a valid identifier") + 1);
+	free(node->val);
+	free(node->name);
+	free(node);
 }
 
-void	ft_export_errors(char *identifier)
+t_node	*ft_remove_node(t_node *node, t_node *remove)
 {
-	write(2, "minishell: export ", ft_strlen("minishell: export "));
-	write(2, identifier, ft_strlen(identifier));
-	write(2, ": not a valid identifier\n",
-		ft_strlen(": not a valid identifier") + 1);
-}
+	t_node	*tmp;
+	t_node	*next;
 
-t_node *ft_remove_node(t_node *node, t_node *remove)
-{
-	t_node *tmp;
-	t_node *next;
-	
 	if (node == remove)
 	{
 		tmp = node->next;
-		free(node);
+		my_free_node(node);
 		return (tmp);
 	}
 	tmp = node;
@@ -120,7 +90,7 @@ t_node *ft_remove_node(t_node *node, t_node *remove)
 		{
 			next = tmp->next;
 			tmp->next = tmp->next->next;
-			free(next);
+			my_free_node(next);
 			return (node);
 		}
 		tmp = tmp->next;
@@ -131,32 +101,28 @@ t_node *ft_remove_node(t_node *node, t_node *remove)
 int	my_unset(char **args, t_node *node)
 {
 	int		i;
-	int 	sign;
 	t_node	*tmp;
 
-	// start of check_error;
-	i = 1;// it may be 0;
-	sign = 0;
-	while (args[i] != NULL)
+	i = 0;
+	g_ret = 0;
+	while (args[++i] != NULL)
 	{
 		if (isvalid_var_unset(args[i]) == -1)
 		{
-			ft_unset_errors(args[i]);
-			sign = -1;
-			i++;
-			continue;
+			ft_unset_errors(args[i++]);
+			g_ret = -1;
+			continue ;
 		}
 		tmp = node;
 		while (tmp != NULL)
 		{
-			if(ft_strcmp(tmp->name, args[i]) == 0)
+			if (ft_strcmp(tmp->name, args[i]) == 0)
 			{
 				node = ft_remove_node(node, tmp);
-				break;
+				break ;
 			}
 			tmp = tmp->next;
 		}
-		i++;
 	}
-	return (sign);
+	return (g_ret);
 }

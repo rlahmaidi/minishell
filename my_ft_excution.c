@@ -1,31 +1,26 @@
-// if (simple_non_builtin_cmd())
-// 	execute_non_builtin();
-// while (strct->next)
-// {
-// 	int fd[2];
-// 	pipe(fd);
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_ft_excution.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rlahmaid <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/16 03:09:48 by rlahmaid          #+#    #+#             */
+/*   Updated: 2022/02/16 16:29:36 by rlahmaid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// 	int id = fork();     KHAMISS;
-// 	if (id == 0)
-// 	{
-// 		dup2(); //
-// 		ft_redirection();
-// 		check_builtin(); // if (cmd == echo) echo(args)  || cmd == ...)
-// 		non_builtin(); //execve
-// 	}
-// 	final_cmd();
-// 	strct = strct->next;
 #include "minishell.h"
 
 int	non_builtin_cmd(t_cmd *strct)
 {
 	if (!ft_strncmp(strct->cmd, "exit", 4) \
-		|| !ft_strncmp(strct->cmd, "export", 6) \
-		|| !ft_strncmp(strct->cmd, "env", 3) \
-		|| !ft_strncmp(strct->cmd, "pwd", 3) \
-		|| !ft_strncmp(strct->cmd, "cd", 2) \
-		|| !ft_strncmp(strct->cmd, "unset", 5) \
-		|| !ft_strncmp(strct->cmd, "echo", 4))
+			|| !ft_strncmp(strct->cmd, "export", 6) \
+			|| !ft_strncmp(strct->cmd, "env", 3) \
+			|| !ft_strncmp(strct->cmd, "pwd", 3) \
+			|| !ft_strncmp(strct->cmd, "cd", 2) \
+			|| !ft_strncmp(strct->cmd, "unset", 5) \
+			|| !ft_strncmp(strct->cmd, "echo", 4))
 		return (0);
 	else
 		return (1);
@@ -55,7 +50,6 @@ char	*ft_get_path(char *bin, t_node *env)
 	char		*path;
 	int			i;
 	struct stat	sb;
-
 
 	while (env)
 	{
@@ -87,18 +81,15 @@ int	ft_excution(t_cmd *strct, t_node *node)
 	int			in;
 	int			out;
 	int			status;
-	static int	ret = 0;
-	//char		**env_tmp;
 	char		*path;
 	char	*error_msg;
 
 	f = -1;
-	//env_tmp = list_to_env(node);
 	if (ft_strcmp(strct->args[0], "echo") == 0 \
-		&& strct->args[1] && ft_strcmp(strct->args[1], "$?") == 0)
+			&& strct->args[1] && ft_strcmp(strct->args[1], "$?") == 0)
 	{
-		printf ("%d\n", ret);
-		ret = 0;
+		printf ("%d\n", g_ret);
+		g_ret = 0;
 		return (0);
 	}
 	if (!non_builtin_cmd(strct) && strct->next == NULL)
@@ -110,7 +101,7 @@ int	ft_excution(t_cmd *strct, t_node *node)
 		builtins(strct, node);
 		dup2(in, 0);
 		dup2(out, 1);
-		return (1);
+		return (0);
 	}
 	while (strct != NULL)
 	{
@@ -171,9 +162,9 @@ int	ft_excution(t_cmd *strct, t_node *node)
 	while (wait(NULL) > 0)
 		;
 	if (WIFEXITED(status) == true)
-		ret = WEXITSTATUS(status);
+		g_ret = WEXITSTATUS(status);
 	if (WIFSIGNALED(status) == true)
-		ret = 128 + WTERMSIG(status);
+		g_ret = 128 + WTERMSIG(status);
 	return (0);
 }
 

@@ -12,9 +12,9 @@
 
 NAME = minishell
 LIBFT = ./libft/libft.a
-SRCS = env_utils.c my_redirections.c my_builtins2.c my_utils2.c my_utils.c ft_strcmp.c my_builtins_functions.c my_ft_excution.c main.c env_strct.c scan.c print_strct.c parser.c rmquotes.c parser_utils.c parser_utils2.c parser_utils3.c data_proccessing.c data_proccessing_utils.c free.c
-FLAGS= -lreadline  -I /Users/milmi/.brew/opt/readline/include -Wall -Wextra -Werror -g -fsanitize=address
-HOMEENVFLAGS= -g -lreadline -L /usr/local/opt/readline/lib -I /usr/local/opt/readline/include -Wall -Wextra -Werror -g -fsanitize=address
+SRCS = my_builtin_utils.c my_env_utils.c my_redirections.c my_builtins2.c my_utils2.c my_utils.c ft_strcmp.c my_builtins_functions.c my_ft_excution.c main.c env_strct.c scan.c print_strct.c parser.c rmquotes.c parser_utils.c parser_utils2.c parser_utils3.c data_proccessing.c data_proccessing_utils.c free.c
+FLAGS= -lreadline  -I /Users/milmi/.brew/opt/readline/include -Wall -Wextra -Werror -g  # -g -fsanitize=address
+HOMEENVFLAGS= -g -lreadline -L /usr/local/opt/readline/lib -I /usr/local/opt/readline/include -Wall -Wextra -Werror #-g -fsanitize=address
 VALGRIND= -lreadline -L /Users/milmi/.brew/opt/readline/lib -I /Users/milmi/.brew/opt/readline/include -Wall -Wextra -Werror
 rm = rm -f
 CC = gcc -g

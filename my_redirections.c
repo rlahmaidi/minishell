@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_redirections.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rlahmaid <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/16 03:13:07 by rlahmaid          #+#    #+#             */
+/*   Updated: 2022/02/16 03:13:11 by rlahmaid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	open_out_files(char type, char *arg)
 {
 	int	fd_out;
+
 	if (type == 'o')
 		fd_out = open(arg, O_CREAT | O_RDWR \
 			| O_TRUNC, S_IWUSR | S_IRUSR);
@@ -23,7 +36,7 @@ int	redirection_handler(t_cmd *strct)
 	fd_out = -2;
 	while (tmp != NULL)
 	{
-		fd_out = open_out_files(tmp->type,tmp->arg);
+		fd_out = open_out_files(tmp->type, tmp->arg);
 		if (tmp->type == 'i')
 		{
 			fd_in = open(tmp->arg, O_RDONLY | S_IRUSR);
